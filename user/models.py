@@ -3,7 +3,7 @@ from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, Permis
 
 
 class UserManager(BaseUserManager):
-    def _create_user(self, email, name,last_name, password, is_staff, is_superuser, **extra_fields):
+    def __create_user(self, email, name,last_name, password, is_staff, is_superuser, **extra_fields):
         user = self.model(
             email = email,
             name = name,
@@ -17,16 +17,16 @@ class UserManager(BaseUserManager):
         return user
 
     def create_user(self, email, name,last_name, password=None, **extra_fields):
-        return self._create_user( email, name,last_name, password, False, False, **extra_fields)
+        return self.__create_user( email, name,last_name, password, False, False, **extra_fields)
 
     def create_superuser(self, email, name,last_name, password=None, **extra_fields):
-        return self._create_user( email, name,last_name, password, True, True, **extra_fields)
+        return self.__create_user( email, name,last_name, password, True, True, **extra_fields)
 
 class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField('Correo Electrónico',max_length = 255, unique = True,)
     name = models.CharField('Nombres', max_length = 255, blank = True, null = True)
     last_name = models.CharField('Apellidos', max_length = 255, blank = True, null = True)
-    image = models.ImageField('Imagen de perfil', upload_to='perfil/', max_length=255, null=True, blank = True)
+    image = models.ImageField('Imagen de perfil', upload_to='perfil/',max_length=255, null=True, blank = True)
     is_active = models.BooleanField(default = True)
     is_staff = models.BooleanField(default = False)
     objects = UserManager()

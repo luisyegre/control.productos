@@ -126,3 +126,6 @@ AUTH_USER_MODEL='user.User'
 LOGIN_REDIRECT_URL='/auth/login'
 LOGOUT_REDIRECT_URL='/auth/login'
 LOGIN_URL='/auth/login'
+
+MEDIA_URL='/media/'
+MEDIA_ROOT=BASE_DIR / 'media'

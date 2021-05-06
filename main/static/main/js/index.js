@@ -11,14 +11,14 @@ async function getProducts(){
       data.data.map((producto,i)=>{
         productos[producto.pk]=producto;
         $productosData.innerHTML+=`
-        <tr>
+        <tr id="${producto.pk}">
           <td>${i}</td>
           <td>${producto.nombre}</td>
           <td>${producto.precio}</td>
           <td>${producto.categoria}</td>
           <td>
             <button>🖊</button>
-            <button onclick="deleteProduct(ev)">❌</button>
+            <button onclick="deleteProduct(event)">❌</button>
           </td>
         </tr>`;
       })
@@ -68,14 +68,14 @@ async function createProduct(){
       productos[producto.pk]=producto;
 
       $productosData.innerHTML+=`
-        <tr>
+        <tr id="${producto.pk}">
           <td>${$productosData.children.length}</td>
           <td>${producto.nombre}</td>
           <td>${producto.precio}</td>
           <td>${producto.categoria}</td>
           <td>
             <button>🖊</button>
-            <button>❌</button>
+            <button onclik="deleteProduct(event)" >❌</button>
           </td>
         </tr>
       `; 
@@ -85,9 +85,28 @@ async function createProduct(){
     console.error(err);
   }
 }
-async function deleteProduct(pk){
-  return (ev)=>{
-    ev.target.parentNode.remove
+async function deleteProduct(event){
+  const $producto=event.target.parentNode.parentNode;
+  const cookies=document.cookie.split(/;|=/);
+  const csrfIndex=cookies.indexOf('csrftoken')
+  const csrfToken=cookies[csrfIndex+1];
+
+  try{
+    const res=await fetch('/api/producto/'+$producto.id,{
+      headers:{
+        "X-CSRFToken":csrfToken
+      },
+      method:'DELETE'
+    });
+    const data=await res.json()
+    if(data.error){
+      alert(data.mensaje);
+    }else{
+      productos[$producto.id]=undefined;
+      $producto.remove();
+    }
+  }catch(err){
+    console.error(err);
   }
 }
 function toggleModal(){

@@ -66,15 +66,14 @@
   <script>
     (function main(){
       $btnToggle.onclick=toggleModal;
+      
       $formAdd.onsubmit=async (ev)=>{
         ev.preventDefault();
         await createProduct(ev);
       }
       getCategorys().then(()=>console.log('categorias obtenidos'))
       getProducts().then(()=>console.log('productos obtenidos'))
-
     })();
-    
   </script>
 </body>
 </html>
