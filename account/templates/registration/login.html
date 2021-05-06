@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'account/css/styles.css' %}">
+  <title>Document</title>
+</head>
+<body>
+  <div class="center-pro">
+    <div class="form_container">
+      <h2 class="form__title">Inicia Secion Aqui!</h2>
+      <form id="login" method="POST">
+        {% csrf_token %}
+        {{ form }}
+        <input type="hidden" name="text">
+        <input type="hidden" name="next" value="/home">
+        <input type="submit" class="form__button" value="Login">
+      </form>
+      <a class="form__link" href="{% url 'register' %}">No tienes cuenta?</a>
+    </div>
+  </div>
+</body>
+</html>

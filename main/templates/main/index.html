@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  {%load static%}
+  <link rel="stylesheet" href="{% static '/main/style.css' %}">
+  <title>EL que te de la gana</title>
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav__buscador-container">
+      {% csrf_token %}
+      <input class="nav__input"type="text" placeholder="Buscador" name="buscador">
+      <button class="nav__buttom-buscador"type="submit">🔍</button>
+    </div>
+    <a class="nav__buttom" href="/auth/logout">🚪 <span class="md-show">Salir</span></a>
+  </nav>
+
+  <div class="modal" id="$modal">
+    <div class="form__container">
+      <h2 class="form__title" >Agrega Un Producto Aqui!</h2>
+      <form id="$formAdd">
+        {% csrf_token %}
+        <label for="$name">Nombre del producto</label>
+        <input name="nombre" type="text" placeholder="nombre" id="$name">
+        <label for="$price">Precio del producto</label>
+        <input name="precio" type="number" step="0.01" placeholder="precio" id="$price">
+        <label for="$categorys">Selecciona Una Categorias</label>
+        <select name="categoria" id="$categorys">
+        </select>
+        <button type="submit">Agregar</button>
+      </form>
+    </div>
+  </div>
+  <div class="float">
+    <button class="btn" id="$btnToggle">+</button>
+  </div>
+  <div class="container">
+    <table class="dtable">
+      <thead>
+        <tr class="thead">
+          <th>#</th>
+          <th>Nombre</th>
+          <th>Precio</th>
+          <th>Categoria</th>
+          <th>actions</th>
+        </tr>
+      </thead>
+      <tbody id="$productosData">
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="pagination">
+      <a class="next-prev">«</a>
+      <a href="#">0</a>
+      <a class="next-prev">»</a>
+    </div>
+  </div>
+  <script>
+    var canShow=false;
+    var productos={};
+
+    async function getProducts(){
+      try{
+        const res=await fetch('/api/producto/');
+        const data=await res.json()
+        if (data.data){
+          $productosData.innerHTML='';
+          productos={};
+          data.data.map((producto,i)=>{
+            productos[producto.pk]=producto;
+            $productosData.innerHTML+=`
+            <tr>
+              <td>${i}</td>
+              <td>${producto.nombre}</td>
+              <td>${producto.precio}</td>
+              <td>${producto.categoria}</td>
+              <td>
+                <button>🖊</button>
+                <button onclick="deleteProduct(ev)">❌</button>
+              </td>
+            </tr>`;
+          })
+        }
+      }catch(err){
+        console.error(err);
+      }
+    }
+    async function getCategorys(){
+      try{
+        const res=await fetch('/api/categoria/');
+        const data=await res.json()
+        if (data.data){
+          $categorys.innerHTML='';
+          data.data.map((categoria,i)=>{
+            $categorys.innerHTML+=`
+            <option value="${categoria.pk}">${categoria.nombre}</option>
+            `;
+          })
+        }
+      }catch(err){
+        console.error(err);
+      }
+    }
+    async function createProduct(){
+      try{
+        let formData=new FormData($formAdd);
+        formData=Object.fromEntries(formData.entries())
+        const res=await fetch('/api/producto/',{
+          headers:{
+            "Content-Type":"application/json",
+            "X-CSRFToken":formData.csrfmiddlewaretoken
+          },
+          method:'POST',
+          body:JSON.stringify({
+            nombre:formData.nombre,
+            precio:formData.precio,
+            categoria:parseInt(formData.categoria)
+          })
+        });
+        const data=await res.json()
+        console.log(data)
+        if (data.error){
+          alert(data.mensaje);
+        }else{
+          let producto=data.data
+          productos[producto.pk]=producto;
+
+          $productosData.innerHTML+=`
+            <tr>
+              <td>${$productosData.children.length}</td>
+              <td>${producto.nombre}</td>
+              <td>${producto.precio}</td>
+              <td>${producto.categoria}</td>
+              <td>
+                <button>🖊</button>
+                <button>❌</button>
+              </td>
+            </tr>
+          `; 
+          toggleModal();
+        }
+      }catch(err){
+        console.error(err);
+      }
+    }
+    async function deleteProduct(pk){
+      return (ev)=>{
+        ev.target.parentNode.remove
+      }
+    }
+    function toggleModal(){
+      canShow=!canShow;
+      $modal.style.display= canShow? "block" : "none";
+    }
+    (function main(){
+      $btnToggle.onclick=toggleModal;
+      $formAdd.onsubmit=async (ev)=>{
+        ev.preventDefault();
+        await createProduct(ev);
+      }
+      getCategorys().then(()=>console.log('categorias obtenidos'))
+      getProducts().then(()=>console.log('productos obtenidos'))
+
+    })();
+    
+  </script>
+</body>
+</html>
