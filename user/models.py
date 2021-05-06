@@ -3,9 +3,8 @@ from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, Permis
 
 
 class UserManager(BaseUserManager):
-    def _create_user(self, username, email, name,last_name, password, is_staff, is_superuser, **extra_fields):
+    def _create_user(self, email, name,last_name, password, is_staff, is_superuser, **extra_fields):
         user = self.model(
-            username = username,
             email = email,
             name = name,
             last_name = last_name,
@@ -17,11 +16,11 @@ class UserManager(BaseUserManager):
         user.save(using=self.db)
         return user
 
-    def create_user(self, username, email, name,last_name, password=None, **extra_fields):
-        return self._create_user(username, email, name,last_name, password, False, False, **extra_fields)
+    def create_user(self, email, name,last_name, password=None, **extra_fields):
+        return self._create_user( email, name,last_name, password, False, False, **extra_fields)
 
-    def create_superuser(self, username, email, name,last_name, password=None, **extra_fields):
-        return self._create_user(username, email, name,last_name, password, True, True, **extra_fields)
+    def create_superuser(self, email, name,last_name, password=None, **extra_fields):
+        return self._create_user( email, name,last_name, password, True, True, **extra_fields)
 
 class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField('Correo Electrónico',max_length = 255, unique = True,)
@@ -30,7 +29,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     image = models.ImageField('Imagen de perfil', upload_to='perfil/', max_length=255, null=True, blank = True)
     is_active = models.BooleanField(default = True)
     is_staff = models.BooleanField(default = False)
-    is_admin = models.BooleanField(default = False)
     objects = UserManager()
 
     class Meta:
