@@ -1,5 +1,6 @@
 var canShow=false;
 var productos={};
+var edits={};
 
 async function getProducts(){
   try{
@@ -17,11 +18,13 @@ async function getProducts(){
           <td>${producto.precio}</td>
           <td>${producto.categoria}</td>
           <td>
-            <button>🖊</button>
-            <button onclick="deleteProduct(event)">❌</button>
+            <button class="action-btn" onclick="editProduct(event)">🖊</button>
+            <button class="action-btn" onclick="deleteProduct(event)">❌</button>
           </td>
         </tr>`;
       })
+      return data.data
+
     }
   }catch(err){
     console.error(err);
@@ -38,6 +41,7 @@ async function getCategorys(){
         <option value="${categoria.pk}">${categoria.nombre}</option>
         `;
       })
+      return data.data
     }
   }catch(err){
     console.error(err);
@@ -74,8 +78,8 @@ async function createProduct(){
           <td>${producto.precio}</td>
           <td>${producto.categoria}</td>
           <td>
-            <button>🖊</button>
-            <button onclik="deleteProduct(event)" >❌</button>
+            <button class="action-btn" onclick="editProduct(event)">🖊</button>
+            <button class="action-btn" onclick="deleteProduct(event)" >❌</button>
           </td>
         </tr>
       `; 
@@ -109,6 +113,58 @@ async function deleteProduct(event){
     console.error(err);
   }
 }
+const confirnEdit=($element,data)=>{
+  updateProduct(data);
+}
+const cancelEdit=(ev)=>{
+  const $element=ev.target.parentNode.parentNode
+  const data = edits[$element.children[0].innerHTML]
+  $element.innerHTML=`
+    <td>${data.count}</td>
+    <td>${data.nombre}</td>
+    <td>${data.precio}</td>
+    <td>${data.categoria}</td>
+    <td>
+      <button class="action-btn" onclick="editProduct(event)">🖊</button>
+      <button class="action-btn" onclick="deleteProduct(event)" >❌</button>
+    </td>
+  `;
+}
+
+async function editProduct(ev){
+  
+
+  const $product=ev.target.parentNode.parentNode
+  const $data=$product.children
+  
+  const data={
+    count:$data[0].innerHTML,
+    nombre:$data[1].innerHTML,
+    precio:$data[2].innerHTML,
+    categoria:$data[3].innerHTML
+  }
+  edits[data.count]=data
+
+  const categorias=await getCategorys();
+  $product.style.padding='0'
+  $product.innerHTML=`
+    <td>${$data[0].innerHTML}</td>
+    <td><input class="edit_input" type="text" id="$nombreEdit" value="${data.nombre}"></td>
+    <td><input class="edit_input" type="number" id="$precioEdit" step=".00" value="${data.precio}"></td>
+    <td>
+      <select class="edit_input" id="$categoriaEdit">
+      ${
+      categorias.map(cat=>`<option value="${cat.pk}" >${cat.nombre}</option>`)
+      }
+      </select>
+    </td>
+    <td>
+      <button class="action-btn" onclick="confirnEdit(event)" >👌</button> 
+      <button class="action-btn" onclick="cancelEdit(event)" >❌</button> 
+    </td>
+  `;
+}
+
 function toggleModal(){
   canShow=!canShow;
   $modal.style.display= canShow? "block" : "none";

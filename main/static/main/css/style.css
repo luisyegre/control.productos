@@ -182,8 +182,21 @@ label,
   cursor: pointer;
 
 }
+.edit_input{
+  border: none;
+  border-bottom:1px solid black;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  font-size:16px;
+  border-radius:0;
+}
 .next-prev:hover{
   background:var(--secondary-dark);
+}
+.action-btn{
+  padding:5px;
+  font-size:.6rem;
 }
 
 form button,form select{

@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class ProductoManager(models.Manager):
   def get_serialized(self,*args,**kwargs):
     producto=self.get(*args,**kwargs)
@@ -11,7 +12,7 @@ class ProductoManager(models.Manager):
     }
     return producto_serialized
   def filter_serialized(self,*args,**kwargs):
-    productos=self.filter(*args,**kwargs)
+    productos=self.filter(*args,**kwargs).select_related('categoria')
     productos_serialized=[]
     for producto in productos:
       productos_serialized.append({
@@ -23,7 +24,7 @@ class ProductoManager(models.Manager):
     return productos_serialized
     
   def all_serialized(self):
-    productos=self.all()
+    productos=self.all().select_related('categoria')
     productos_serialized=[]
     for producto in productos:
       productos_serialized.append({

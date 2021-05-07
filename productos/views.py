@@ -10,13 +10,13 @@ class ProductoView(View):
     response={"mensaje":"got","data":'',"error":False}
     
     if pk>0:
-      if len(Producto.objects.filter(pk=pk))<=0:
+      producto= Producto.objects.filter_serialized(pk=pk)
+      if not producto:
         response["mensaje"]="producto no existe"
         response["error"]=True
         return JsonResponse(response)
     
-      producto=Producto.objects.get_serialized(pk=pk)
-      response["data"]=producto
+      response["data"]=producto[0]
       return JsonResponse(response)
     else:
       producto=Producto.objects.all_serialized()
@@ -28,15 +28,16 @@ class ProductoView(View):
     form=ProductoForm(data)
 
     if form.is_valid():
-      
-      if len(Categoria.objects.filter(pk=data["categoria"]))<=0:
+      categoria= Categoria.objects.filter(pk=data["categoria"])
+      if not categoria:
         return JsonResponse({"error":True,"mensaje":"categoria no existe"})
 
       data["categoria"]=int(data["categoria"])
       data["precio"]=float(data["precio"])
-      data["categoria"]=Categoria.objects.get(pk=data["categoria"])
+      data["categoria"]=categoria.first()
 
       producto=Producto.objects.create(**data)
+      print(producto)
       producto=Producto.objects.get_serialized(pk=producto.pk)
       return JsonResponse({"error":False,"mensaje":"creado","data":producto})
 
@@ -44,10 +45,10 @@ class ProductoView(View):
       return JsonResponse({"error":True,"mensaje":"campos vacios/incorrectos"})
 
   def delete(self,req,pk=0):
-    if len(Producto.objects.filter(pk=pk))<=0:
+    producto=Producto.objects.filter(pk=pk)
+    if not producto:
       return JsonResponse({"error":True,"mensaje":"producto no existe"})
     else:
-      producto=Producto.objects.get(pk=pk)
       producto.delete()
       return JsonResponse({"error":False,"mensaje":"producto eliminado"})
 
@@ -59,15 +60,15 @@ class CategoriaView(View):
     response={"mensaje":"got","data":'',"error":False}
     
     if pk>0:
-      if len(Categoria.objects.filter(pk=pk))<=0:
-        response["mensaje"]="producto no existe"
+      categoria=Categoria.objects.filter_serialized(pk=pk)
+      if not categoria:
+        response["mensaje"]="categoria no existe"
         response["error"]=True
         return JsonResponse(response)
 
-      producto=Categoria.objects.get_serialized(pk=pk)
-      response["data"]=producto
+      response["data"]=categoria[0]
       return JsonResponse(response)
     else:
-      producto=Categoria.objects.all_serialized()
-      response["data"]=producto
+      categoria=Categoria.objects.all_serialized()
+      response["data"]=categoria
       return JsonResponse(response)
