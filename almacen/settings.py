@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 from pathlib import Path
-
+import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = '@cut4kvw!jfl(r2pw=k4to09mqbbmpxpn!kewmtg07t@*feh2y'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = []
 
@@ -76,12 +76,23 @@ WSGI_APPLICATION = 'almacen.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+DB_PRODUCTION={
+    'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    'NAME': 'de24le9eelo7s0',
+    'USER': 'zfonmwekbculnz',
+    'PASSWORD':'c2cf6aa070bb6845cd74eb1cde47326cfde3022107e0f152b762dbaf553f49cd',
+    'HOST': 'ec2-35-174-35-242.compute-1.amazonaws.com',
+    'PORT': '5432',
 }
+DB_DEVELOP={
+    'ENGINE': 'django.db.backends.sqlite3',
+    'NAME': BASE_DIR / 'db.sqlite3',
+}
+DATABASES={} 
+if DEBUG:
+    DATABASES['default']=DB_DEVELOP
+else:
+    DATABASES['default']=DB_PRODUCTION
 
 
 # Password validation
@@ -122,8 +133,10 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
-STATIC_ROOT = os.path.join(BASE_DIR,'static')
-STATIC_URL = '/static/'
+STATIC_URL='/static/'
+STATIC_ROOT=BASE_DIR/'static'
+
+
 AUTH_USER_MODEL='user.User'
 
 LOGIN_REDIRECT_URL='/auth/login'
@@ -131,4 +144,4 @@ LOGOUT_REDIRECT_URL='/auth/login'
 LOGIN_URL='/auth/login'
  
 MEDIA_URL='/media/'
-MEDIA_ROOT=os.path.join(BASE_DIR,'media')
+MEDIA_ROOT=BASE_DIR/'media'
