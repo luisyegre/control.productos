@@ -21,7 +21,7 @@
   <div class="modal" id="$modal">
     <div class="form__container">
       <h2 class="form__title" >Agrega Un Producto Aqui!</h2>
-      <form id="$formAdd">
+      <form id="$formAdd" method="POST">
         {% csrf_token %}
         <label for="$name">Nombre del producto</label>
         <input name="nombre" type="text" placeholder="nombre" id="$name">
