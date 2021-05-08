@@ -52,9 +52,18 @@ class ProductoView(View):
       producto.delete()
       return JsonResponse({"error":False,"mensaje":"producto eliminado"})
 
-  def put(self,req,pk=0):
-    pass
-
+  def put(self,req,pk=0):  
+    if pk>0:
+      producto=Producto.objects.filter(pk=pk)
+      if not producto:
+        return JsonResponse({"error":True,"mensaje":"producto no encontrado"})
+      
+      producto.update(**req.data)
+        
+      return JsonResponse({"error":False,"mensaje":"producto actualizado"})
+    else:
+      return JsonResponse({"error":True,"mensaje":"producto no encontrado"})
+    
 class CategoriaView(View):
   def get(self,req,pk=0):
     response={"mensaje":"got","data":'',"error":False}
