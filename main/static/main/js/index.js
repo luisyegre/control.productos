@@ -1,41 +1,40 @@
 var canShow=false;
 var productos={};
 var edits={};
-var editing=False
-function renderProduct(key,{pk,nombre,precio,categoria},$element,){
+var editing=false
+function renderProduct(key,productData,$element){
   if ($element){
     $element.innerHTML=`
-    <tr id="${pk}">
+    <tr id="${productData.pk}">
       <td>${key}</td>
-      <td>${nombre}</td>
-      <td>${precio}</td>
-      <td>${categoria}</td>
+      <td>${productData.nombre}</td>
+      <td>${productData.precio}</td>
+      <td>${productData.categoria}</td>
       <td>
         <button class="action-btn" onclick="editProduct(event)">🖊</button>
         <button class="action-btn" onclick="deleteProduct(event)">❌</button>
       </td>
     </tr>`
+  }else{
+
+    $productosData.innerHTML+=`
+    <tr id="${productData.pk}">
+      <td>${key}</td>
+      <td>${productData.nombre}</td>
+      <td>${productData.precio}</td>
+      <td>${productData.categoria}</td>
+      <td>
+        <button class="action-btn" onclick="editProduct(event)">🖊</button>
+        <button class="action-btn" onclick="deleteProduct(event)">❌</button>
+      </td>
+    </tr>`;
   }
-
-  $productosData.innerHTML+=`
-  <tr id="${pk}">
-    <td>${key}</td>
-    <td>${nombre}</td>
-    <td>${precio}</td>
-    <td>${categoria}</td>
-    <td>
-      <button class="action-btn" onclick="editProduct(event)">🖊</button>
-      <button class="action-btn" onclick="deleteProduct(event)">❌</button>
-    </td>
-  </tr>`;
 }
-
 function getCokie(key){
   const cookies=document.cookie.split(/;|=/);
   const cookieIndex=cookies.indexOf(key)
   return cookies[cookieIndex+1];
 }
-
 async function getProducts(){
   $loadinger.style.display='flex'
   try{
@@ -99,6 +98,7 @@ async function createProduct(){
       alert(data.mensaje);
     }else{
       let producto=data.data
+      console.log(producto)
       productos[producto.pk]=producto;
       renderProduct($productosData.children.length,{producto})
       $loadinger.style.display='none'
@@ -173,7 +173,7 @@ async function updateProduct(productData,$element){
     console.error(err);
   }
 }
-const confirnEdit=async (event)=>{
+async function confirnEdit(event){
   const $element=event.target.parentNode.parentNode
   const data={
     id:$element.id,
@@ -202,7 +202,6 @@ function cancelEdit(ev){
   `;
   editing=false
 }
-
 async function editProduct(ev){
   if (editing){
     alert('ya esta editando');
@@ -238,7 +237,6 @@ async function editProduct(ev){
     </td>
   `;
 }
-
 function toggleModal(){
   canShow=!canShow;
   $modal.style.display= canShow? "block" : "none";
