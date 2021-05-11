@@ -53,12 +53,12 @@ class ProductoView(View):
       return JsonResponse({"error":False,"mensaje":"producto eliminado"})
 
   def put(self,req,pk=0):  
+    data=json.loads(req.body)
     if pk>0:
       producto=Producto.objects.filter(pk=pk)
       if not producto:
         return JsonResponse({"error":True,"mensaje":"producto no encontrado"})
-      
-      producto.update(**req.data)
+      producto.update(**data)
         
       return JsonResponse({"error":False,"mensaje":"producto actualizado"})
     else:

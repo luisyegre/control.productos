@@ -5,6 +5,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   {%load static%}
+
   <link rel="stylesheet" href="{% static '/main/css/style.css' %}">
   <title>EL que te de la gana</title>
 </head>
@@ -17,7 +18,10 @@
     </div>
     <a class="nav__buttom" href="/auth/logout">🚪 <span class="md-show">Salir</span></a>
   </nav>
-
+  <div class="modal" id="$loadinger">
+    <div class="loading">
+    </div>
+  </div>
   <div class="modal" id="$modal">
     <div class="form__container">
       <h2 class="form__title" >Agrega Un Producto Aqui!</h2>

@@ -3,6 +3,7 @@ var productos={};
 var edits={};
 
 async function getProducts(){
+  $loadinger.style.display='flex'
   try{
     const res=await fetch('/api/producto/');
     const data=await res.json()
@@ -23,6 +24,7 @@ async function getProducts(){
           </td>
         </tr>`;
       })
+      $loadinger.style.display='none'
       return data.data
 
     }
@@ -31,6 +33,8 @@ async function getProducts(){
   }
 }
 async function getCategorys(){
+  $loadinger.style.display='flex'
+
   try{
     const res=await fetch('/api/categoria/');
     const data=await res.json()
@@ -38,9 +42,11 @@ async function getCategorys(){
       $categorys.innerHTML='';
       data.data.map((categoria,i)=>{
         $categorys.innerHTML+=`
-        <option value="${categoria.pk}">${categoria.nombre}</option>
+        <option value="${categoria.pk}" nombre="${categoria.nombre}">${categoria.nombre}</option>
         `;
       })
+      $loadinger.style.display='none'
+
       return data.data
     }
   }catch(err){
@@ -48,23 +54,26 @@ async function getCategorys(){
   }
 }
 async function createProduct(){
+  $loadinger.style.display='flex'
+  const cookies=document.cookie.split(/;|=/);
+  const csrfIndex=cookies.indexOf('csrftoken')
+  const csrfToken=cookies[csrfIndex+1];
   try{
     let formData=new FormData($formAdd);
     formData=Object.fromEntries(formData.entries())
     const res=await fetch('/api/producto/',{
       headers:{
         "Content-Type":"application/json",
-        "X-CSRFToken":formData.csrfmiddlewaretoken
+        "X-CSRFToken":csrfToken
       },
       method:'POST',
       body:JSON.stringify({
         nombre:formData.nombre,
-        precio:formData.precio,
+        precio:parseFloat(formData.precio),
         categoria:parseInt(formData.categoria)
       })
     });
     const data=await res.json()
-    console.log(data)
     if (data.error){
       alert(data.mensaje);
     }else{
@@ -83,13 +92,17 @@ async function createProduct(){
           </td>
         </tr>
       `; 
+      $loadinger.style.display='none'
       toggleModal();
+
     }
   }catch(err){
     console.error(err);
   }
 }
 async function deleteProduct(event){
+  $loadinger.style.display='flex'
+
   const $producto=event.target.parentNode.parentNode;
   const cookies=document.cookie.split(/;|=/);
   const csrfIndex=cookies.indexOf('csrftoken')
@@ -104,17 +117,79 @@ async function deleteProduct(event){
     });
     const data=await res.json()
     if(data.error){
+      $loadinger.style.display='none'
       alert(data.mensaje);
     }else{
       productos[$producto.id]=undefined;
       $producto.remove();
+      $loadinger.style.display='none'
+
     }
   }catch(err){
     console.error(err);
   }
 }
-const confirnEdit=($element,data)=>{
-  updateProduct(data);
+async function updateProduct(productData,$element){
+  $loadinger.style.display='flex'
+  const cookies=document.cookie.split(/;|=/);
+  const csrfIndex=cookies.indexOf('csrftoken')
+  const csrfToken=cookies[csrfIndex+1];
+  try{
+    const res=await fetch('/api/producto/'+productData.id,{
+      headers:{
+        "Content-Type":"application/json",
+        "X-CSRFToken":csrfToken
+      },
+      method:'PUT',
+      body:JSON.stringify({
+        nombre:productData.nombre,
+        precio:parseFloat(productData.precio),
+        categoria:parseInt(productData.categoria)
+      })
+    });
+    const data=await res.json()
+    if (data.error){
+      alert(data.mensaje);
+    }else{
+      const categorias= await getCategorys();
+      const categoria=categorias.find(c=>c.pk==productData.categoria);
+      productos[productData.id]={
+        pk:productData.id,
+        nombre:productData.nombre,
+        precio:parseFloat(productData.precio),
+        categoria:categoria.nombre
+      };
+      producto=productos[productData.id];
+      $element.innerHTML=`
+        <tr id="${producto.pk}">
+          <td>${$productosData.children.length}</td>
+          <td>${producto.nombre}</td>
+          <td>${producto.precio}</td>
+          <td>${categoria.nombre}</td>
+          <td>
+            <button class="action-btn" onclick="editProduct(event)">🖊</button>
+            <button class="action-btn" onclick="deleteProduct(event)" >❌</button>
+          </td>
+        </tr>
+      `; 
+      $loadinger.style.display='none'
+
+    }
+  }catch(err){
+    console.error(err);
+  }
+}
+const confirnEdit=async (event)=>{
+  const $element=event.target.parentNode.parentNode
+  const data={
+    id:$element.id,
+    nombre:$element.children[1].children[0].value,
+    precio:parseFloat($element.children[2].children[0].value),
+    categoria:parseInt($categoriaEdit.value),
+  }
+  $loadinger.style.display='flex'
+  await updateProduct(data,$element);
+  $loadinger.style.display='none'
 }
 const cancelEdit=(ev)=>{
   const $element=ev.target.parentNode.parentNode
@@ -132,7 +207,6 @@ const cancelEdit=(ev)=>{
 }
 
 async function editProduct(ev){
-  
 
   const $product=ev.target.parentNode.parentNode
   const $data=$product.children
@@ -154,7 +228,7 @@ async function editProduct(ev){
     <td>
       <select class="edit_input" id="$categoriaEdit">
       ${
-      categorias.map(cat=>`<option value="${cat.pk}" >${cat.nombre}</option>`)
+      categorias.map(cat=>`<option value="${cat.pk}" nombre="${cat.nombre}">${cat.nombre}</option>`)
       }
       </select>
     </td>
