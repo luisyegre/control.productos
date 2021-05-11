@@ -12,8 +12,7 @@
 <body>
   <nav class="nav">
     <div class="nav__buscador-container">
-      {% csrf_token %}
-      <input class="nav__input"type="text" placeholder="Buscador" name="buscador">
+      <input class="nav__input" type="text" placeholder="Buscador" name="buscador">
       <button class="nav__buttom-buscador"type="submit">🔍</button>
     </div>
     <a class="nav__buttom" href="/auth/logout">🚪 <span class="md-show">Salir</span></a>

@@ -1,6 +1,40 @@
 var canShow=false;
 var productos={};
 var edits={};
+var editing=False
+function renderProduct(key,{pk,nombre,precio,categoria},$element,){
+  if ($element){
+    $element.innerHTML=`
+    <tr id="${pk}">
+      <td>${key}</td>
+      <td>${nombre}</td>
+      <td>${precio}</td>
+      <td>${categoria}</td>
+      <td>
+        <button class="action-btn" onclick="editProduct(event)">🖊</button>
+        <button class="action-btn" onclick="deleteProduct(event)">❌</button>
+      </td>
+    </tr>`
+  }
+
+  $productosData.innerHTML+=`
+  <tr id="${pk}">
+    <td>${key}</td>
+    <td>${nombre}</td>
+    <td>${precio}</td>
+    <td>${categoria}</td>
+    <td>
+      <button class="action-btn" onclick="editProduct(event)">🖊</button>
+      <button class="action-btn" onclick="deleteProduct(event)">❌</button>
+    </td>
+  </tr>`;
+}
+
+function getCokie(key){
+  const cookies=document.cookie.split(/;|=/);
+  const cookieIndex=cookies.indexOf(key)
+  return cookies[cookieIndex+1];
+}
 
 async function getProducts(){
   $loadinger.style.display='flex'
@@ -12,21 +46,10 @@ async function getProducts(){
       productos={};
       data.data.map((producto,i)=>{
         productos[producto.pk]=producto;
-        $productosData.innerHTML+=`
-        <tr id="${producto.pk}">
-          <td>${i}</td>
-          <td>${producto.nombre}</td>
-          <td>${producto.precio}</td>
-          <td>${producto.categoria}</td>
-          <td>
-            <button class="action-btn" onclick="editProduct(event)">🖊</button>
-            <button class="action-btn" onclick="deleteProduct(event)">❌</button>
-          </td>
-        </tr>`;
+        renderProduct(i,producto)
       })
       $loadinger.style.display='none'
       return data.data
-
     }
   }catch(err){
     console.error(err);
@@ -55,9 +78,7 @@ async function getCategorys(){
 }
 async function createProduct(){
   $loadinger.style.display='flex'
-  const cookies=document.cookie.split(/;|=/);
-  const csrfIndex=cookies.indexOf('csrftoken')
-  const csrfToken=cookies[csrfIndex+1];
+  const csrfToken= getCokie('csrftoken');
   try{
     let formData=new FormData($formAdd);
     formData=Object.fromEntries(formData.entries())
@@ -79,22 +100,9 @@ async function createProduct(){
     }else{
       let producto=data.data
       productos[producto.pk]=producto;
-
-      $productosData.innerHTML+=`
-        <tr id="${producto.pk}">
-          <td>${$productosData.children.length}</td>
-          <td>${producto.nombre}</td>
-          <td>${producto.precio}</td>
-          <td>${producto.categoria}</td>
-          <td>
-            <button class="action-btn" onclick="editProduct(event)">🖊</button>
-            <button class="action-btn" onclick="deleteProduct(event)" >❌</button>
-          </td>
-        </tr>
-      `; 
+      renderProduct($productosData.children.length,{producto})
       $loadinger.style.display='none'
       toggleModal();
-
     }
   }catch(err){
     console.error(err);
@@ -104,9 +112,7 @@ async function deleteProduct(event){
   $loadinger.style.display='flex'
 
   const $producto=event.target.parentNode.parentNode;
-  const cookies=document.cookie.split(/;|=/);
-  const csrfIndex=cookies.indexOf('csrftoken')
-  const csrfToken=cookies[csrfIndex+1];
+  const csrfToken= getCokie('csrftoken');
 
   try{
     const res=await fetch('/api/producto/'+$producto.id,{
@@ -131,9 +137,8 @@ async function deleteProduct(event){
 }
 async function updateProduct(productData,$element){
   $loadinger.style.display='flex'
-  const cookies=document.cookie.split(/;|=/);
-  const csrfIndex=cookies.indexOf('csrftoken')
-  const csrfToken=cookies[csrfIndex+1];
+  const csrfToken= getCokie('csrftoken');
+
   try{
     const res=await fetch('/api/producto/'+productData.id,{
       headers:{
@@ -160,18 +165,7 @@ async function updateProduct(productData,$element){
         categoria:categoria.nombre
       };
       producto=productos[productData.id];
-      $element.innerHTML=`
-        <tr id="${producto.pk}">
-          <td>${$productosData.children.length}</td>
-          <td>${producto.nombre}</td>
-          <td>${producto.precio}</td>
-          <td>${categoria.nombre}</td>
-          <td>
-            <button class="action-btn" onclick="editProduct(event)">🖊</button>
-            <button class="action-btn" onclick="deleteProduct(event)" >❌</button>
-          </td>
-        </tr>
-      `; 
+      renderProduct($productosData.children.length,producto,$element);
       $loadinger.style.display='none'
 
     }
@@ -190,10 +184,12 @@ const confirnEdit=async (event)=>{
   $loadinger.style.display='flex'
   await updateProduct(data,$element);
   $loadinger.style.display='none'
+  editing=false
 }
-const cancelEdit=(ev)=>{
+function cancelEdit(ev){
   const $element=ev.target.parentNode.parentNode
   const data = edits[$element.children[0].innerHTML]
+  console.log(data)
   $element.innerHTML=`
     <td>${data.count}</td>
     <td>${data.nombre}</td>
@@ -204,13 +200,17 @@ const cancelEdit=(ev)=>{
       <button class="action-btn" onclick="deleteProduct(event)" >❌</button>
     </td>
   `;
+  editing=false
 }
 
 async function editProduct(ev){
-
+  if (editing){
+    alert('ya esta editando');
+    return
+  }
   const $product=ev.target.parentNode.parentNode
   const $data=$product.children
-  
+  editing=true;
   const data={
     count:$data[0].innerHTML,
     nombre:$data[1].innerHTML,
@@ -218,7 +218,7 @@ async function editProduct(ev){
     categoria:$data[3].innerHTML
   }
   edits[data.count]=data
-
+  
   const categorias=await getCategorys();
   $product.style.padding='0'
   $product.innerHTML=`
