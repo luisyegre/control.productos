@@ -1,7 +1,7 @@
 var canShow=false;
 var productos={};
 var edits={};
-var editing=False
+var editing=false
 function renderProduct(key,{pk,nombre,precio,categoria},$element,){
   if ($element){
     $element.innerHTML=`
@@ -100,7 +100,8 @@ async function createProduct(){
     }else{
       let producto=data.data
       productos[producto.pk]=producto;
-      renderProduct($productosData.children.length,{producto})
+      console.log(producto)
+      renderProduct($productosData.children.length,{productos[producto.pk]})
       $loadinger.style.display='none'
       toggleModal();
     }
@@ -173,7 +174,8 @@ async function updateProduct(productData,$element){
     console.error(err);
   }
 }
-const confirnEdit=async (event)=>{
+
+async function confirnEdit(event){
   const $element=event.target.parentNode.parentNode
   const data={
     id:$element.id,
@@ -186,6 +188,7 @@ const confirnEdit=async (event)=>{
   $loadinger.style.display='none'
   editing=false
 }
+
 function cancelEdit(ev){
   const $element=ev.target.parentNode.parentNode
   const data = edits[$element.children[0].innerHTML]

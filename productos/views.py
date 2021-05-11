@@ -18,6 +18,12 @@ class ProductoView(View):
     
       response["data"]=producto[0]
       return JsonResponse(response)
+    elif (req.body):
+      data=json.loads(req.body)
+      producto= Producto.objects.filter_serialized(**data)
+      response["data"]=producto
+      return JsonResponse(response)
+
     else:
       producto=Producto.objects.all_serialized()
       response["data"]=producto
