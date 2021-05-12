@@ -2,9 +2,9 @@ var canShow=false;
 var productos={};
 var edits={};
 var editing=false
-function renderProduct(key,productData,$element){
-  if ($element){
-    $element.innerHTML=`
+function renderProduct(key,productData,$elementL){
+  if ($elementL){
+    $elementL.innerHTML=`
     <tr id="${productData.pk}">
       <td>${key}</td>
       <td>${productData.nombre}</td>
@@ -98,9 +98,8 @@ async function createProduct(){
       alert(data.mensaje);
     }else{
       let producto=data.data
-      console.log(producto)
       productos[producto.pk]=producto;
-      renderProduct($productosData.children.length,{producto})
+      renderProduct($productosData.children.length,producto)
       $loadinger.style.display='none'
       toggleModal();
     }

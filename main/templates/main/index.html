@@ -7,6 +7,16 @@
   {%load static%}
 
   <link rel="stylesheet" href="{% static '/main/css/style.css' %}">
+  <script src="{% static '/main/js/request.js' %}"></script>
+
+  <script src="{% static '/main/js/category/data.js' %}"></script>
+  <script src="{% static '/main/js/category/controller.js' %}"></script>
+  <script src="{% static '/main/js/category/view.js' %}"></script>
+
+  <script src="{% static '/main/js/product/data.js' %}"></script>
+  <script src="{% static '/main/js/product/controller.js' %}"></script>
+  <script src="{% static '/main/js/product/view.js' %}"></script>
+  
   <title>EL que te de la gana</title>
 </head>
 <body>
@@ -65,6 +75,7 @@
       <a class="next-prev">»</a>
     </div>
   </div>
+
   <script src="{% static '/main/js/index.js' %}"></script>
   <script>
     (function main(){
@@ -77,6 +88,7 @@
       getCategorys().then(()=>console.log('categorias obtenidos'))
       getProducts().then(()=>console.log('productos obtenidos'))
     })();
+
   </script>
 </body>
 </html>
