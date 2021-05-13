@@ -4,7 +4,7 @@ var edits={};
 var editing=false
 function renderProduct(key,productData,$elementL){
   if ($elementL){
-    $elementL.innerHTML=`
+    $elementL.innerHTML+=`
     <tr id="${productData.pk}">
       <td>${key}</td>
       <td>${productData.nombre}</td>
@@ -76,11 +76,11 @@ async function getCategorys(){
   }
 }
 async function createProduct(){
-  $loadinger.style.display='flex'
   const csrfToken= getCokie('csrftoken');
   try{
     let formData=new FormData($formAdd);
     formData=Object.fromEntries(formData.entries())
+    $loadinger.style.display='flex'
     const res=await fetch('/api/producto/',{
       headers:{
         "Content-Type":"application/json",
@@ -238,6 +238,5 @@ async function editProduct(ev){
   `;
 }
 function toggleModal(){
-  canShow=!canShow;
-  $modal.style.display= canShow? "block" : "none";
+  $modal.style.display= $modal.style.display==='none'? "block" : "none";
 }

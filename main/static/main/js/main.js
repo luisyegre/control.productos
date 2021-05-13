@@ -10,7 +10,7 @@ async function deleteProductEvent(ev){
   const productData=helper.productDataFromDOM(ev.target);
   const resp=await proCon.delete(productData.pk);
   if (!resp.error){
-    state.products=productReducer(actions.product.REMOVE,state,productDataFromDOM)
+    state.products=productReducer(actions.product.REMOVE,state,productData)
     helper.showFlashMessage(resp.mensaje,'success');
   }else{
     helper.showFlashMessage(resp.mensaje,'error');

@@ -5,23 +5,23 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   {%load static%}
-
   <link rel="stylesheet" href="{% static '/main/css/style.css' %}">
-  <script src="{% static '/main/js/helpers.js' %}"></script>
-  <script src="{% static '/main/js/actions.js' %}"></script>
-  <script src="{% static '/main/js/libs/component.js' %}"></script>
-  <script src="{% static '/main/js/libs/request.js' %}"></script>
-  <script src="{% static '/main/js/libs/dto.js' %}"></script>
+  
+  <script src="{% static 'main/js/helpers.js' %}"></script>
+  <script src="{% static 'main/js/actions.js' %}"></script>
+  <script src="{% static 'main/js/libs/component.js' %}"></script>
+  <script src="{% static 'main/js/libs/request.js' %}"></script>
+  <script src="{% static 'main/js/libs/dto.js' %}"></script>
 
-  <script src="{% static '/main/js/category/data.js' %}"></script>
-  <script src="{% static '/main/js/category/controller.js' %}"></script>
-  <script src="{% static '/main/js/category/view.js' %}"></script>
-  <script src="{% static '/main/js/category/reducer.js' %}"></script>
+  <script src="{% static 'main/js/category/data.js' %}"></script>
+  <script src="{% static 'main/js/category/controller.js' %}"></script>
+  <script src="{% static 'main/js/category/view.js' %}"></script>
+  <script src="{% static 'main/js/category/reducer.js' %}"></script>
 
-  <script src="{% static '/main/js/product/data.js' %}"></script>
-  <script src="{% static '/main/js/product/controller.js' %}"></script>
-  <script src="{% static '/main/js/product/view.js' %}"></script>
-  <script src="{% static '/main/js/product/reducer.js' %}"></script>
+  <script src="{% static 'main/js/product/data.js' %}"></script>
+  <script src="{% static 'main/js/product/controller.js' %}"></script>
+  <script src="{% static 'main/js/product/view.js' %}"></script>
+  <script src="{% static 'main/js/product/reducer.js' %}"></script>
   
   <title>EL que te de la gana</title>
 </head>
@@ -60,9 +60,9 @@
     </div>
   </div>
   <div class="float">
-    <button class="btn" id="$btnToggle">+</button>
+    <button class="btn" id="$btnToggle" onclick="toggleModal">+</button>
   </div>
-  <div class="container">
+  <div class="container">|
     <table class="dtable">
       <thead>
         <tr class="thead">
@@ -88,6 +88,6 @@
     </div>
   </div>
 
-  <script src="{% static '/main/js/main.js' %}"></script>
+  <script src="{% static 'main/js/main.js' %}"></script>
 </body>
 </html>
