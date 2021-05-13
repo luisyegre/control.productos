@@ -1,16 +1,5 @@
-class CategoryData{
-  constructor(data){
-    this.data=data
-  }
-  toString(){
-    return JSON.stringify({
-      nombre:this.nombre,
-      pk:this.pk,
-    })
-  }
-}
-class CategoryDto extends CategoryData{
+class CategoryDto extends Dto{
   empty(){
-    return ((this.data.nombre===undefined || this.data.nombre.length<0) || (this.data.pk===undefined))
+    return ((this.nombre===undefined || this.nombre.length<0) || (this.pk===undefined))
   }
 }

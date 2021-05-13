@@ -50,6 +50,22 @@ label,
 .form__title{
   margin-top: 8px;
 }
+
+form button,form select{
+  background:var(--secondary);
+  color: white;
+  margin-top: 10px;
+  cursor: pointer;
+  font-size: 1rem;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  outline: none;
+}
+form button:hover,
+form select:hover{
+  background:var(--secondary-dark);
+}
 .form__container{
   z-index:800;
   box-shadow:0px 0px 30px 5px rgba(0, 0, 0, 0.3);
@@ -215,22 +231,25 @@ label,
   border-bottom:8px solid rgba(0,0,0,0);
   animation:loading 1s infinite linear;
 }
-
-form button,form select{
-  background:var(--secondary);
+.flash__message{
+  display: none;
+  text-align: center;
+  padding: 2px;
+  transition-delay:.5s;
+}
+.warning{
+  background-color:yellow;
   color: white;
-  margin-top: 10px;
-  cursor: pointer;
-  font-size: 1rem;
-  border: none;
-  padding: 10px;
-  border-radius: 5px;
-  outline: none;
 }
-form button:hover,
-form select:hover{
-  background:var(--secondary-dark);
+.error{
+  background-color:red;
+  color: white;
 }
+.success{
+  background-color:green;
+  color: white;
+}
+
 @keyframes loading {
   from{
     transform: rotate(0deg);
@@ -239,7 +258,6 @@ form select:hover{
     transform: rotate(360deg);
   }
 }
-
 @media screen and (min-width:425px){
   .md-show{
     display:inline ;

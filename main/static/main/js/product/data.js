@@ -1,49 +1,28 @@
-class ProductData{
-  constructor(data){
-    this.data=data
-  }
-  toString(){
-    if (!this.empty()){
-      return JSON.stringify(this.data)
-    }else{
-      throw new Error('Product Data is empty it cannot set its values as string')
-    }
-  }
-}
-class CreateProductDto extends ProductData{
+
+class CreateProductDto extends Dto{
   empty(){
     return (
-      this.data.nombre.length<0 || 
-      (this.data.categoria===undefined) || 
-      (this.data.precio===undefined) 
+      this.nombre.length<0 || 
+      (this.categoria===undefined) || 
+      (this.precio===undefined) 
     )
   }
 }
-class ProductDto extends ProductData{
+class ProductDto extends Dto{
   empty(){
     return (
-      this.data.nombre.length<0 || 
-      this.data.categoria.length<0 || 
-      (this.data.precio===undefined) || 
-      (this.data.pk===undefined)
+      this.nombre.length<0 || 
+      this.categoria.length<0 || 
+      (this.precio===undefined) || 
+      (this.pk===undefined)
     )
   }
 }
-class UpdateProductDto extends ProductData{
+class UpdateProductDto extends Dto{
   empty(){
-    let empty=false
-    if (this.data){
-      const keys=Object.keys(this.data)
-      
-      if (!keys){
-        empty=true
-      }
-      else if(!this.data["nombre"] && (this.data["precio"] ===undefined) && (this.data["categoria"]===undefined)){
-        empty=true
-      }
-    }else{
-      empty=true
-    }
-    return empty
+    return (
+      !this.nombre && (this.precio ===undefined) &&
+       (this.categoria===undefined)
+    )
   }
 }

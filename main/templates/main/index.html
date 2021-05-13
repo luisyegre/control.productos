@@ -7,15 +7,21 @@
   {%load static%}
 
   <link rel="stylesheet" href="{% static '/main/css/style.css' %}">
-  <script src="{% static '/main/js/request.js' %}"></script>
+  <script src="{% static '/main/js/helpers.js' %}"></script>
+  <script src="{% static '/main/js/actions.js' %}"></script>
+  <script src="{% static '/main/js/libs/component.js' %}"></script>
+  <script src="{% static '/main/js/libs/request.js' %}"></script>
+  <script src="{% static '/main/js/libs/dto.js' %}"></script>
 
   <script src="{% static '/main/js/category/data.js' %}"></script>
   <script src="{% static '/main/js/category/controller.js' %}"></script>
   <script src="{% static '/main/js/category/view.js' %}"></script>
+  <script src="{% static '/main/js/category/reducer.js' %}"></script>
 
   <script src="{% static '/main/js/product/data.js' %}"></script>
   <script src="{% static '/main/js/product/controller.js' %}"></script>
   <script src="{% static '/main/js/product/view.js' %}"></script>
+  <script src="{% static '/main/js/product/reducer.js' %}"></script>
   
   <title>EL que te de la gana</title>
 </head>
@@ -27,6 +33,8 @@
     </div>
     <a class="nav__buttom" href="/auth/logout">🚪 <span class="md-show">Salir</span></a>
   </nav>
+  <div class="flash__message" id="$flashMessage">
+  </div>
   <div class="modal" id="$loadinger">
     <div class="loading">
     </div>
@@ -35,13 +43,12 @@
     <div class="form__container">
       <h2 class="form__title" >Agrega Un Producto Aqui!</h2>
       <form id="$formAdd" method="POST">
-        {% csrf_token %}
         <label for="$name">Nombre del producto</label>
         <input name="nombre" type="text" placeholder="nombre" id="$name">
         <label for="$price">Precio del producto</label>
         <input name="precio" type="number" step="0.01" placeholder="precio" id="$price">
         <label for="$categorys">Selecciona Una Categorias</label>
-        <select name="categoria" id="$categorys">
+        <select name="categoria" id="$categoris">
         </select>
         <button type="submit">Agregar</button>
       </form>
@@ -61,7 +68,7 @@
           <th>actions</th>
         </tr>
       </thead>
-      <tbody id="$productosData">
+      <tbody id="$products">
         <tr>
           <td></td>
           <td></td>
@@ -76,19 +83,6 @@
     </div>
   </div>
 
-  <script src="{% static '/main/js/index.js' %}"></script>
-  <script>
-    (function main(){
-      $btnToggle.onclick=toggleModal;
-      
-      $formAdd.onsubmit=async (ev)=>{
-        ev.preventDefault();
-        await createProduct(ev);
-      }
-      getCategorys().then(()=>console.log('categorias obtenidos'))
-      getProducts().then(()=>console.log('productos obtenidos'))
-    })();
-
-  </script>
+  <script src="{% static '/main/js/main.js' %}"></script>
 </body>
 </html>

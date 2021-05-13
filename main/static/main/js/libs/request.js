@@ -1,3 +1,8 @@
+function getCokie(key){
+  const cookies=document.cookie.split(/;|=/);
+  const cookieIndex=cookies.indexOf(key)
+  return cookies[cookieIndex+1];
+}
 async function request(uri,options){
   try{
     const res =await fetch(uri,options);

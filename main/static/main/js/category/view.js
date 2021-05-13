@@ -1,15 +1,18 @@
-class Category{
-  constructor(CategoryData){
-    this.data=CategoryData;
+class Category extends Component{
+  constructor(categoryData){
+    super(categoryData);
+    this.state={
+      data:categoryData
+    };
   }
   template(){
     return `
-      <option value="${this.data.pk}" nombre="${this.data.nombre}">
-      ${this.data.nombre}
+      <option value="${this.state.data.pk}" nombre="${this.state.data.nombre}">
+      ${this.state.data.nombre}
       </option>
     `
   }
   render($parent){
-    $parent.innerHTML+=this.template();
+    this._render($parent)
   }
 }
